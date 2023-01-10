@@ -21,9 +21,15 @@
 		<PackageReference Include="System.Net.Http.Json" Version="7.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.1" />
-
-		<PackageReference Include="Maanfee.Dashboard.Views.Core" Version="6.49.44" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Maanfee.Dashboard.Views.Core" Version="6.53.47" />
+	</ItemGroup>
+
+	<!--<ItemGroup>
+	  <ProjectReference Include="..\..\Maanfee.Dashboard.Views.Core\Maanfee.Dashboard.Views.Core.csproj" />
+	</ItemGroup>-->
 
 	<ItemGroup>
 	  <Compile Update="Resources\ApplicationResource.Designer.cs">

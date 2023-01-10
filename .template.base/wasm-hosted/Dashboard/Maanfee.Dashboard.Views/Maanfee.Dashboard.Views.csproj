@@ -21,16 +21,20 @@
 		<PackageReference Include="System.Net.Http.Json" Version="7.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.1" />
-	      <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.1" />
+	    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.1" />
+	</ItemGroup>
 
-		<PackageReference Include="Maanfee.Dashboard.Domain" Version="6.49.44" />
-		<PackageReference Include="Maanfee.Dashboard.Resources" Version="6.49.44" />
+	<ItemGroup>
+		<PackageReference Include="Maanfee.Dashboard.Domain" Version="6.53.47" />
+		<PackageReference Include="Maanfee.Dashboard.Resources" Version="6.53.47" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Examples\Maanfee.Dashboard.Examples.Views.JsInterop\Maanfee.Dashboard.Examples.Views.JsInterop.csproj" />
 		<ProjectReference Include="..\..\Examples\Maanfee.Dashboard.Examples.Views\Maanfee.Dashboard.Examples.Views.csproj" />
-	
+		
+		<!--<ProjectReference Include="..\..\Maanfee.Dashboard.Domain\Maanfee.Dashboard.Domain.csproj" />
+		<ProjectReference Include="..\..\Maanfee.Dashboard.Resource\Maanfee.Dashboard.Resources.csproj" />-->
 		<ProjectReference Include="..\Maanfee.Dashboard.Views.Base\Maanfee.Dashboard.Views.Base.csproj" />
 	</ItemGroup>
 

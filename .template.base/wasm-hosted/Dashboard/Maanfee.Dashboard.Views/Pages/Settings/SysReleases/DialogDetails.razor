@@ -75,7 +75,7 @@
 	protected override async Task OnInitializedAsync()
 	{
 		IsLoaded = false;
-		
+
 		try
 		{
 			var Callback = await Http.GetFromJsonAsync<CallbackResult<SysRelease>>($"api/SysReleases/Details/{Id}");
@@ -97,4 +97,4 @@
 		IsLoaded = true;
 	}
 
-}
+} 

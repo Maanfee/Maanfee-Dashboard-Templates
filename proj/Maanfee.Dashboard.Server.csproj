@@ -16,11 +16,11 @@
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.1" />
 
-		<PackageReference Include="Maanfee.Dashboard.Services" Version="6.49.44" />
+		<PackageReference Include="Maanfee.Dashboard.Services" Version="6.53.47" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Maanfee.Dashboard.Views\Maanfee.Dashboard.Views.csproj" />
+	  <ProjectReference Include="..\Maanfee.Dashboard.Views\Maanfee.Dashboard.Views.csproj" />
 	</ItemGroup>
 
 </Project>

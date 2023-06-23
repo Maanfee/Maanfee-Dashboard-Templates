@@ -1,4 +1,5 @@
 ﻿using Maanfee.Dashboard.Views.Core.Services;
+using Maanfee.Web.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -48,12 +49,14 @@ namespace Maanfee.Dashboard.Views.Base.Extensions
             #region - Services -
 
             builder.Services.AddSingleton<AccountStateContainer>();
-            builder.Services.AddScoped<LocalConfigurationService>();
+			builder.Services.AddSingleton<UrlStateContainer>();
+			builder.Services.AddScoped<LocalConfigurationService>();
             builder.Services.AddScoped<PermissionService>();
+            builder.Services.AddScoped<TableConfigurationService>();
 
-            #endregion
+			#endregion
 
-            return builder;
+			return builder;
         }
 
         private static void RegisterPermissionClaims(AuthorizationOptions options)

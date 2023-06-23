@@ -7,7 +7,6 @@ using Maanfee.Dashboard.Views.Core.Shared.Dialogs;
 using Maanfee.Web.Core;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.SignalR.Client;
 using MudBlazor;
 using MudBlazor.Utilities;
 using System;
@@ -38,6 +37,11 @@ namespace Maanfee.Dashboard.Views.Shared
 				}
 				else
 				{
+					if (SharedLayoutSettings.IsFullscreenMode)
+					{
+						await Fullscreen.ToggleFullscreenAsync();
+					}
+
 					var username = State.Name;
 					var Callback = await Http.GetFromJsonAsync<CallbackResult<ApplicationUser>>($"/api/Users/GetUserByUserName/{username}");
 
@@ -48,19 +52,23 @@ namespace Maanfee.Dashboard.Views.Shared
 						AccountStateContainer.Name = Callback.Data.Name;
 						AccountStateContainer.Avatar = "data:image/png;base64," + Convert.ToBase64String(Callback.Data.Avatar);
 						AccountStateContainer.PersonalCode = Callback.Data.PersonalCode;
-						AccountStateContainer.IdPersonalUserDepartments = Callback.Data.UserDepartments.Where(x => x.IsPersonal).Select(x => x.IdDepartment).ToList();
-						AccountStateContainer.IdManagementUserDepartments = Callback.Data.UserDepartments.Where(x => !x.IsPersonal).Select(x => x.IdDepartment).ToList();
+						AccountStateContainer.IdUserDepartments = Callback.Data.UserDepartments.Select(x => x.IdDepartment).ToList();
 
 						Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
 						Snackbar.Configuration.PreventDuplicates = true;
 						Snackbar.Add($"{DashboardResource.StringWelcome}", Severity.Success);
 
 						// ********************************************
-						if (!AccountStateContainer.IdPersonalUserDepartments.Any() || !AccountStateContainer.IdManagementUserDepartments.Any())
+						if (!AccountStateContainer.IdUserDepartments.Any())
 						{
 							await Task.Delay(1000);
 							Dialog.Show<DialogDepartmentNotFound>(string.Empty,
-								new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+								new DialogOptions
+								{
+									DisableBackdropClick = true,
+									MaxWidth = MaxWidth.Small,
+									FullWidth = true
+								});
 						}
 						// ********************************************
 
@@ -106,7 +114,7 @@ namespace Maanfee.Dashboard.Views.Shared
 
 		// ******************************************************
 
-		public async Task ToggleDarkMode()
+		private async Task ToggleDarkMode()
 		{
 			if (SharedLayoutSettings.IsDarkMode)
 			{
@@ -122,7 +130,7 @@ namespace Maanfee.Dashboard.Views.Shared
 
 		// ******************************************************
 
-		public async Task ToggleDirection()
+		private async Task ToggleDirection()
 		{
 			if (LanguageModel.IsRTL)
 			{
@@ -138,13 +146,30 @@ namespace Maanfee.Dashboard.Views.Shared
 			await LocalStorage.SetAsync<LanguageModel>(StorageDefaultValue.CultureStorage, LanguageModel);
 		}
 
+		private async Task ToggleFullscrren(bool Toggled)
+		{
+			if (Toggled)
+			{
+				await Fullscreen.ToggleFullscreenAsync();
+			}
+			else
+			{
+				await Fullscreen.CloseFullscreenAsync();
+			}
+		}
+
 		// ******************************************************
 
 		private bool IshemingDrawerOpen;
 
-		protected void ThemingDrawerOpenChangedHandler(bool state)
+		protected async void ThemingDrawerOpenChangedHandler(bool state)
 		{
 			IshemingDrawerOpen = state;
+			// Save for fullscreen mode
+			if (!state)
+			{
+				await LocalConfiguration.SetConfigurationAsync();
+			}
 		}
 
 		private void UpdateUserPreferences(MudColor Color)

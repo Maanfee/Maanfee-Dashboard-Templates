@@ -1,12 +1,12 @@
 ﻿using Maanfee.Dashboard.Core;
+using Maanfee.Dashboard.Domain.ViewModels;
 using MudBlazor;
 using System;
 using System.Threading.Tasks;
-using Maanfee.Dashboard.Domain.ViewModels;
 
 namespace Maanfee.Dashboard.Views.Pages.Authentications
 {
-    public partial class Login
+	public partial class Login
     {
         private bool PasswordVisibility;
         private InputType _passwordInput = InputType.Password;
@@ -14,12 +14,12 @@ namespace Maanfee.Dashboard.Views.Pages.Authentications
         private LoginViewModel LoginViewModelSubmit = new();
         private bool IsProcessing = false;
 
-		protected override Task OnInitializedAsync()
+		protected override async Task OnInitializedAsync()
 		{
-			return base.OnInitializedAsync();
-		}
+            await base.OnInitializedAsync();
+        }
 
-		private void TogglePasswordVisibility()
+        private void TogglePasswordVisibility()
         {
             if (PasswordVisibility)
             {
@@ -43,7 +43,7 @@ namespace Maanfee.Dashboard.Views.Pages.Authentications
 
             try
             {
-                await AuthenticationStateProvider.Login(LoginViewModelSubmit.TrimString());
+                await AuthenticationStateProvider.Login(LoginViewModelSubmit.TrimStringAndCheckPersianSpecialLetter());
                 Navigation.NavigateTo("");
             }
             catch (Exception ex)

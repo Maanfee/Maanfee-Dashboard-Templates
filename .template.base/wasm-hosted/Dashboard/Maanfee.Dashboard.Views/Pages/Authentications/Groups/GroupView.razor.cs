@@ -6,7 +6,6 @@ using Maanfee.Dashboard.Views.Base;
 using Maanfee.Dashboard.Views.Core.Shared.Dialogs;
 using Maanfee.Web.Core;
 using MudBlazor;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +48,13 @@ namespace Maanfee.Dashboard.Views.Pages.Authentications.Groups
 					state.PageSize = 10;
 				}
 
-				TableState.state = state;
+				TableState.state = new TableState
+				{
+					Page = state.Page,
+					PageSize = state.PageSize,
+					SortDirection = state.SortDirection,
+					SortLabel = state.SortLabel,
+				};
 				TableState.UserName = AccountStateContainer.UserName;
 				if (FilterViewModel != null)
 				{
@@ -59,13 +64,9 @@ namespace Maanfee.Dashboard.Views.Pages.Authentications.Groups
 				var PostResult = await Http.PostAsJsonAsync($"api/Groups/PaginationIndex", TableState);
 				if (PostResult.IsSuccessStatusCode)
 				{
-					var stringcallback = await PostResult.Content.ReadAsStringAsync();
-					var JObjectData = Newtonsoft.Json.Linq.JObject.Parse(stringcallback);
+					var JsonResult = await PostResult.Content.ReadFromJsonAsync<CallbackResult<PaginatedListViewModel<Group>>>();
 
-					var List = JsonConvert.DeserializeObject<List<Group>>(JObjectData["data"]?["list"]?.ToString());
-					int TotalItems = JsonConvert.DeserializeObject<int>(JObjectData["data"]?["totalPages"]?.ToString());
-
-					Data = List.AsEnumerable().Select((data, index) => new TableViewModel
+					Data = JsonResult.Data.List.AsEnumerable().Select((data, index) => new TableViewModel
 					{
 						RowNum = ((state.Page - 1) * state.PageSize) + (index + 1),
 						Id = data.Id,
@@ -73,10 +74,11 @@ namespace Maanfee.Dashboard.Views.Pages.Authentications.Groups
 					}).ToList();
 
 					IsTableLoading = false;
+					TableState.Dispose();
 
 					return new TableData<TableViewModel>()
 					{
-						TotalItems = TotalItems,
+						TotalItems = JsonResult.Data.TotalPages,
 						Items = Data
 					};
 				}
@@ -84,6 +86,7 @@ namespace Maanfee.Dashboard.Views.Pages.Authentications.Groups
 				{
 					Snackbar.Add(PostResult.Content.ReadAsStringAsync().Result, Severity.Error);
 					IsTableLoading = false;
+					TableState.Dispose();
 					return new TableData<TableViewModel>()
 					{
 						Items = Data,
@@ -95,6 +98,7 @@ namespace Maanfee.Dashboard.Views.Pages.Authentications.Groups
 			{
 				Snackbar.Add($"{DashboardResource.StringError} : " + ex.Message, Severity.Error);
 				IsTableLoading = false;
+				TableState.Dispose();
 				return new TableData<TableViewModel>()
 				{
 					Items = Data,
@@ -114,10 +118,10 @@ namespace Maanfee.Dashboard.Views.Pages.Authentications.Groups
 
 		private async Task OpenSearchDialog()
 		{
-			DialogParameters parameters = new DialogParameters();
-			parameters.Add("FilterViewModel", FilterViewModel);
+			DialogParameters DialogParameters = new DialogParameters();
+			DialogParameters.Add("FilterViewModel", FilterViewModel);
 
-			var dialog = Dialog.Show<DialogFilter>(DashboardResource.StringSearch, parameters,
+			var dialog = Dialog.Show<DialogFilter>(DashboardResource.StringSearch, DialogParameters,
 				new DialogOptions()
 				{
 					MaxWidth = MaxWidth.Small,
@@ -143,10 +147,10 @@ namespace Maanfee.Dashboard.Views.Pages.Authentications.Groups
 
 		private async Task OpenCrudateDialog<T>(T Id)
 		{
-			DialogParameters parameters = new DialogParameters();
-			parameters.Add("Id", Id);
+			DialogParameters DialogParameters = new DialogParameters();
+			DialogParameters.Add("Id", Id);
 
-			var dialog = Dialog.Show<DialogCrudate>(string.Empty, parameters,
+			var dialog = Dialog.Show<DialogCrudate>(string.Empty, DialogParameters,
 				new DialogOptions()
 				{
 					NoHeader = true,
@@ -173,10 +177,10 @@ namespace Maanfee.Dashboard.Views.Pages.Authentications.Groups
 
 		private void OpenDetailsDialog<T>(T Id)
 		{
-			DialogParameters parameters = new DialogParameters();
-			parameters.Add("Id", Id);
+			DialogParameters DialogParameters = new DialogParameters();
+			DialogParameters.Add("Id", Id);
 
-			var dialog = Dialog.Show<DialogDetails>(string.Empty, parameters,
+			var dialog = Dialog.Show<DialogDetails>(string.Empty, DialogParameters,
 				new DialogOptions()
 				{
 					NoHeader = true,
@@ -192,9 +196,9 @@ namespace Maanfee.Dashboard.Views.Pages.Authentications.Groups
 
 		private async Task OpenDeleteDialog<T>(T Id)
 		{
-			DialogParameters parameters = new DialogParameters();
+			DialogParameters DialogParameters = new DialogParameters();
 
-			var dialog = Dialog.Show<DialogDelete>(DashboardResource.StringAlert, parameters,
+			var dialog = Dialog.Show<DialogDelete>(DashboardResource.StringAlert, DialogParameters,
 				new DialogOptions()
 				{
 					MaxWidth = MaxWidth.ExtraSmall,

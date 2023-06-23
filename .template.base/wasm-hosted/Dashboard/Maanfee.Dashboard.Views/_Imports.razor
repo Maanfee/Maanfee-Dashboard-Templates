@@ -38,6 +38,7 @@
 @inject CustomStateProvider AuthenticationStateProvider
 @inject IJSRuntime JS
 @inject AccountStateContainer AccountStateContainer
+@inject UrlStateContainer UrlStateContainer
 @inject HttpClient Http
 
 @inject IDialogService Dialog
@@ -54,5 +55,6 @@
 @using Maanfee.Web.JSInterop
 @inject Maanfee.Web.JSInterop.Dom Dom
 @inject Maanfee.Web.JSInterop.LocalStorage LocalStorage
+@inject Maanfee.Web.JSInterop.Fullscreen Fullscreen
 
 @inject Maanfee.Web.Core.FileDownloadService FileDownload

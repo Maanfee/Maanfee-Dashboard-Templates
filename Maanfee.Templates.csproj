@@ -12,7 +12,7 @@
 		<Copyright>Copyright (c) 2023-2022 Maanfee</Copyright>
 		<Company>Maanfee</Company>
 		<Authors>Maanfee Team (MF)</Authors>
-		<Version>2.6.11</Version>
+		<Version>2.8.12</Version>
 		<PackageIcon>MaanfeeLight.png</PackageIcon>
 		<!--**********************************************-->
 		<PackageType>Template</PackageType>
@@ -22,12 +22,8 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<PackageTags>Blazor, MudBlazor, Templates, Layout, Components, UI</PackageTags>
-		<!--<Description>Blazor templates pre configured with MudBlazor.</Description>
-    <PackageProjectUrl>http://mudblazor.com/</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/MudBlazor/Templates</RepositoryUrl>-->
+		<PackageTags>Blazor, Maanfee Dashboard, MudBlazor, Templates, Layout, Components, UI</PackageTags>
 		<RepositoryType>git</RepositoryType>
-
 		<IncludeContentInPack>true</IncludeContentInPack>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<ContentTargetFolders>content</ContentTargetFolders>

@@ -1,5 +1,4 @@
-﻿@using MudBlazor.Utilities;
-@inherits SharedLayout
+﻿@inherits _BaseComponentView
 
 @if (SharedLayoutSettings.IsRTL)
 {
@@ -21,8 +20,8 @@
                 <MudAppBar Elevation="25">
                     <MudIcon Icon="@Icons.Custom.Brands.MicrosoftVisualStudio" Size="Size.Large" />
                     <MudText Typo="Typo.h6" Class="ml-4">&nbsp;@ApplicationResource.StringApplicationName</MudText>
-                    <MudToolBar DisableGutters="true">
-                        <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@((e) => DrawerToggle())" Class="ml-3" />
+                    <MudToolBar Gutters="false">
+                        <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit" OnClick="@(() => DrawerOpen = !DrawerOpen)" Class="ml-3" />
                     </MudToolBar>
                     <MudSpacer />
                     @* ********************************** *@
@@ -54,8 +53,10 @@
                         <ChildContent>
                             <ComponentsUserCard Class="mt-n2" />
                             <MudDivider Class="mb-2" />
-                            <MudListItem Text="@DashboardResource.StringAccount" Href="/AccountView" Icon="@Icons.Material.Outlined.Person" />
-                            <MudListItem Text="@DashboardResource.StringLogout" Icon="@Icons.Material.Filled.Logout" OnClick="LogoutClick" />
+                            <MudListItem T="string" Text="@DashboardResource.StringAccount" OnClick="OpenUserAccountDialog" Icon="@Icons.Material.Outlined.Person" />
+                            <MudListItem T="string" Text="@DashboardResource.StringConfiguration" Icon="@Icons.Material.Filled.Settings" OnClick="OpenConfigurationDialog" />
+                            <MudDivider />
+                            <MudListItem T="string" Text="@DashboardResource.StringLogout" Icon="@Icons.Material.Filled.Logout" OnClick="LogoutClick" />
                         </ChildContent>
                     </MudMenu>
                 </MudAppBar>
@@ -73,7 +74,6 @@
                             ThemingDrawerOpen="IshemingDrawerOpen" ThemingDrawerOpenChanged="ThemingDrawerOpenChangedHandler" />
                 <ThemesButton OnClick="@(() => IshemingDrawerOpen = true)" />
                 @*************************************@
-                <DialogServerConnection />
                 @* <MudAppBar  DisableGutters="true" Bottom="true" Fixed="true" Color="Color.Primary" Elevation="1">
 
                 </MudAppBar>*@

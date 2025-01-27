@@ -2,9 +2,10 @@
 
 	<PropertyGroup>
 		<!--<RunAOTCompilation>true</RunAOTCompilation>-->
-		<TargetFramework>net7.0</TargetFramework>
-		<BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
+    <TargetFramework>net9.0</TargetFramework>
+    <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
 		<TieredPGO>true</TieredPGO>
+		<WasmEnableSIMD>false</WasmEnableSIMD>
 		<!--**********************************************-->
 		<DebugType>none</DebugType>
 		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
@@ -15,29 +16,26 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.9" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.9" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.9" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.9" />
+		<PackageReference Include="System.Net.Http.Json" Version="9.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.1" />
+		<PackageReference Include="System.Private.Uri" Version="4.3.2" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Maanfee.Dashboard.Domain" Version="6.145.131" />
-		<PackageReference Include="Maanfee.Dashboard.Resources" Version="6.145.131" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Examples\Maanfee.Dashboard.Examples.Views.JsInterop\Maanfee.Dashboard.Examples.Views.JsInterop.csproj" />
+    <ProjectReference Include="..\..\Examples\Maanfee.Dashboard.Examples.Views\Maanfee.Dashboard.Examples.Views.csproj" />
+    <ProjectReference Include="..\Maanfee.Dashboard.Views.Base\Maanfee.Dashboard.Views.Base.csproj" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\Examples\Maanfee.Dashboard.Examples.Views.JsInterop\Maanfee.Dashboard.Examples.Views.JsInterop.csproj" />
-		<ProjectReference Include="..\..\Examples\Maanfee.Dashboard.Examples.Views\Maanfee.Dashboard.Examples.Views.csproj" />
-		
-		<!--<ProjectReference Include="..\..\Maanfee.Dashboard.Domain\Maanfee.Dashboard.Domain.csproj" />
-		<ProjectReference Include="..\..\Maanfee.Dashboard.Resource\Maanfee.Dashboard.Resources.csproj" />-->
-		<ProjectReference Include="..\Maanfee.Dashboard.Views.Base\Maanfee.Dashboard.Views.Base.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Maanfee.Dashboard.Domain" Version="8.86.0" />
+    <PackageReference Include="Maanfee.Dashboard.Resources" Version="8.86.0" />
+  </ItemGroup>
 
-	<ItemGroup>
+  <ItemGroup>
 		<Content Update="wwwroot\config.json">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>

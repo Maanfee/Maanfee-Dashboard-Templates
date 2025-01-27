@@ -1,0 +1,98 @@
+﻿
+<MudRTLProvider RightToLeft="@SharedLayoutSettings.IsRTL">
+    <MudDialog OnKeyDown="OnKeyDownAsync">
+        <DialogContent>
+            <MudCard Class="mt-2">
+                <MudPaper Elevation="3" Class="" Outlined="true" Square="true">
+                    <MudToolBar Dense>
+                        <MudText Typo="Typo.button" Color="Color.Primary">
+                            @DashboardResource.StringSearch
+                        </MudText>
+                        <MudSpacer />
+                        <MudTooltip Text="@DashboardResource.StringSearch" Color="Color.Tertiary" Arrow>
+                            <MudIconButton OnClick="Search" Icon="@Icons.Material.Filled.ManageSearch" Color="Color.Tertiary" />
+                        </MudTooltip>
+                        <MudTooltip Text="@DashboardResource.StringCancel" Color="Color.Tertiary" Arrow>
+                            <MudIconButton OnClick="Close" Icon="@Icons.Material.Filled.Close" Color="Color.Error" />
+                        </MudTooltip>
+                    </MudToolBar>
+                </MudPaper>
+                <MudCardContent>
+                    <MudGrid>
+                        <MudItem md="6">
+                            <MudTextField @bind-Value="FilterViewModel.Name" Variant="Variant.Outlined"
+                                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Title" Clearable
+                                          For="@(() => FilterViewModel.Name)"
+                                          Label="@DashboardResource.StringName" />
+                        </MudItem>
+                        <MudItem md="6">
+
+                        </MudItem>
+                        <MudItem md="6">
+                            <MudAutocomplete T="DropDownDepartmentViewModel" Label="@DashboardResource.StringDepartment"
+                                             ResetValueOnEmptyText="true" Clearable MaxItems="null" Variant="Variant.Outlined"
+                                             For="@(() => FilterViewModel.Department)"
+                                             ShowProgressIndicator="true" @bind-Value="FilterViewModel.Department"
+                                             SearchFunc="GetDepartmentsAsync" ToStringFunc="@(e=> e==null?null : $"{e.Title}")" />
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+            </MudCard>
+        </DialogContent>
+    </MudDialog>
+</MudRTLProvider>
+
+@code {
+
+    [CascadingParameter]
+    public IMudDialogInstance MudDialog { get; set; }
+
+    private void Close() => MudDialog.Close();
+
+    // *****************************************************
+
+    private async Task Search()
+    {
+        await Task.Delay(100);
+
+        MudDialog.Close(DialogResult.Ok(FilterViewModel));
+    }
+
+    [Parameter]
+    public FilterUserViewModel FilterViewModel { get; set; } = new();
+
+    #region - Combobox -
+
+    protected async Task<IEnumerable<DropDownDepartmentViewModel>> GetDepartmentsAsync(string value, CancellationToken token)
+    {
+        List<DropDownDepartmentViewModel> Parents = new();
+        var Callback = await Http.GetFromJsonAsync<CallbackResult<List<DropDownDepartmentViewModel>>>($"api/Departments/GetDropDownDepartments?value={value}", token);
+        if (Callback.Data != null)
+        {
+            Parents = Callback.Data;
+        }
+        else
+        {
+            Snackbar.Add(Callback.Error.ToString(), Severity.Error);
+        }
+        return Parents;
+    }
+
+    #endregion
+
+    #region - Key Events -
+
+    private async Task OnKeyDownAsync(KeyboardEventArgs args)
+    {
+        switch (args.Key)
+        {
+            case "Enter":
+            case "NumpadEnter":
+                await Search();
+                break;
+        }
+    }
+
+    #endregion
+
+}

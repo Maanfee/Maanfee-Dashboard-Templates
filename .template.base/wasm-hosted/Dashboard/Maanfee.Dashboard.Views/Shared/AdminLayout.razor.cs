@@ -3,12 +3,13 @@ using Maanfee.Dashboard.Domain.Entities;
 using Maanfee.Dashboard.Resources;
 using Maanfee.Dashboard.Views.Core;
 using Maanfee.Dashboard.Views.Core.DefaultValues;
-using Maanfee.Dashboard.Views.Core.Shared;
 using Maanfee.Dashboard.Views.Core.Shared.Dialogs;
+using Maanfee.Dashboard.Views.Pages.Authentications;
+using Maanfee.Dashboard.Views.Pages.Settings;
 using Maanfee.Web.Core;
+using Maanfee.Web.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.SignalR.Client;
 using MudBlazor;
 using MudBlazor.Utilities;
 using System;
@@ -18,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace Maanfee.Dashboard.Views.Shared
 {
-    public partial class AdminLayout : SharedLayout
+    public partial class AdminLayout : _BaseComponentView, IDisposable
     {
         [CascadingParameter]
         private Task<AuthenticationState> AuthenticationState { get; set; }
@@ -28,7 +29,6 @@ namespace Maanfee.Dashboard.Views.Shared
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            await InitSignalRAsync();
 
             try
             {
@@ -65,13 +65,13 @@ namespace Maanfee.Dashboard.Views.Shared
                         if (!AccountStateContainer.IdUserDepartments.Any())
                         {
                             await Task.Delay(1000);
-                            Dialog.Show<DialogDepartmentNotFound>(string.Empty,
-                                new DialogOptions
-                                {
-                                    DisableBackdropClick = true,
-                                    MaxWidth = MaxWidth.Small,
-                                    FullWidth = true
-                                });
+                            await Dialog.ShowAsync<DialogDepartmentNotFound>(string.Empty,
+                                    new DialogOptions
+                                    {
+                                        BackdropClick = false,
+                                        MaxWidth = MaxWidth.Small,
+                                        FullWidth = true
+                                    });
                         }
                         // ********************************************
 
@@ -87,33 +87,53 @@ namespace Maanfee.Dashboard.Views.Shared
             {
                 Snackbar.Add($"{DashboardResource.StringError} : " + ex.Message, Severity.Error);
             }
+
+            Fullscreen.OnFullscreenChange += FullscreenChanged;
+        }
+
+        public void Dispose()
+        {
+            Fullscreen.OnFullscreenChange -= FullscreenChanged;
         }
 
         // ******************************************************
 
         private async Task LogoutClick()
         {
-            var parameters = new DialogParameters
+            var DialogParameters = new DialogParameters
             {
                 {nameof(DialogLogout.ContentText), DashboardResource.StringReallyLogout},
                 {nameof(DialogLogout.SubmitButtonColor), Color.Error},
             };
 
-            var options = new DialogOptions { CloseButton = false, MaxWidth = MaxWidth.Small, FullWidth = true };
+            var dialog = await Dialog.ShowAsync<DialogLogout>(DashboardResource.StringLogout, DialogParameters,
+               new DialogOptions()
+               {
+                   CloseButton = false,
+                   MaxWidth = MaxWidth.Small,
+                   FullWidth = true,
+                   Position = DialogPosition.Center,
+                   BackgroundClass = "Dialog-Blur",
+                   CloseOnEscapeKey = true,
+               });
+        }
 
-            Dialog.Show<DialogLogout>(DashboardResource.StringLogout, parameters, options);
+        private async Task OpenConfigurationDialog()
+        {
+            DialogParameters DialogParameters = new DialogParameters();
 
-            await Task.Delay(10);
+            var dialog = await Dialog.ShowAsync<DialogConfiguration>(string.Empty, DialogParameters,
+                new DialogOptions()
+                {
+                    MaxWidth = MaxWidth.Medium,
+                    Position = DialogPosition.Center,
+                    FullWidth = true,
+                });
         }
 
         // ******************************************************
 
         private bool DrawerOpen = true;
-
-        private void DrawerToggle()
-        {
-            DrawerOpen = !DrawerOpen;
-        }
 
         // ******************************************************
 
@@ -161,6 +181,13 @@ namespace Maanfee.Dashboard.Views.Shared
             }
         }
 
+        private async void FullscreenChanged()
+        {
+            TableHeight = TableConfiguration.SetHeight(SharedLayoutSettings.IsRTL, await Fullscreen.IsFullscreenAsync(), _IsTableScroll);
+
+            await InvokeAsync(StateHasChanged);
+        }
+
         // ******************************************************
 
         private bool IshemingDrawerOpen;
@@ -182,63 +209,24 @@ namespace Maanfee.Dashboard.Views.Shared
 
         // ******************************************************
 
-        #region - SignalR Connection Status -
+        #region - User Account -
 
-        [CascadingParameter]
-        public HubConnection HubConnection { get; set; }
-
-        private async Task InitSignalRAsync()
+        private async Task OpenUserAccountDialog()
         {
-            if (HubConnection == null)
-            {
-                HubConnection = new HubConnectionBuilder()
-                    .WithUrl(Navigation.ToAbsoluteUri("/signalRHub"))
-                    .WithAutomaticReconnect()
-                    .Build();
-            }
+            DialogParameters DialogParameters = new DialogParameters();
 
-            if (HubConnection.State == HubConnectionState.Disconnected)
-            {
-                await HubConnection.StartAsync();
-            }
-
-            IDialogReference dialog = null;
-
-            HubConnection.Closed += async (Error) =>
-            {
-                await Task.Run(() =>
+            var dialog = await Dialog.ShowAsync<DialogUserAccount>(string.Empty, DialogParameters,
+                new DialogOptions()
                 {
-                    DialogParameters DialogParameters = new DialogParameters();
-
-                    dialog = Dialog.Show<DialogServerConnection>(string.Empty, DialogParameters,
-                        new DialogOptions()
-                        {
-                            NoHeader = true,
-                            MaxWidth = MaxWidth.Small,
-                            FullWidth = true,
-                            //FullScreen = true,
-                            Position = DialogPosition.Center,
-                            CloseOnEscapeKey = true,
-                            ClassBackground = "Dialog-Blur",
-                            DisableBackdropClick = true,
-                        });
+                    NoHeader = true,
+                    MaxWidth = MaxWidth.ExtraLarge,
+                    FullWidth = true,
+                    Position = DialogPosition.Center,
+                    BackgroundClass = "Dialog-Blur"
                 });
-            };
-
-            HubConnection.Reconnected += async (Message) =>
-            {
-                await Task.Run(() =>
-                            {
-                                if (dialog != null)
-                                {
-                                    dialog.Close();
-                                }
-                            });
-            };
-
-
         }
 
         #endregion
+
     }
 }

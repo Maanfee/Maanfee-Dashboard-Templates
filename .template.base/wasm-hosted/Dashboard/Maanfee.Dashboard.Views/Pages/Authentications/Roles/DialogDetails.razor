@@ -5,16 +5,22 @@
         <DialogContent>
             @if (!IsLoaded)
             {
-                <Overlay />
+                <FormOverlay />
             }
             else
             {
                 <MudCard Class="mt-2">
-                    <MudCardHeader>
-                        <MudText Typo="Typo.button" Color="Color.Primary">
-                            @DashboardResource.StringRole
-                        </MudText>
-                    </MudCardHeader>
+                    <MudPaper Elevation="25">
+                        <MudToolBar Dense>
+                            <MudText Color="Color.Primary">
+                                @DashboardResource.StringRole
+                            </MudText>
+                            <MudSpacer />
+                            <MudTooltip Text="@DashboardResource.StringCancel" Color="Color.Tertiary" Arrow>
+                                <MudIconButton OnClick="Close" Icon="@Icons.Material.Filled.Close" Color="Color.Error" />
+                            </MudTooltip>
+                        </MudToolBar>
+                    </MudPaper>
                     <MudDivider DividerType="DividerType.FullWidth" />
                     <MudCardContent>
                         <MudGrid>
@@ -31,11 +37,6 @@
                         </MudGrid>
                     </MudCardContent>
                 </MudCard>
-                <MudPaper Class="pa-3 my-2 ActionColor" Elevation="3" Outlined="true" Square="true">
-                    <MudStack Spacing="1" Row="true">
-                        <MudButton OnClick="Close" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.FreeCancellation" IconColor="Color.Surface">@DashboardResource.StringCancel</MudButton>
-                    </MudStack>
-                </MudPaper>
             }
         </DialogContent>
     </MudDialog>
@@ -44,7 +45,7 @@
 @code {
 
     [CascadingParameter]
-    public MudDialogInstance MudDialog { get; set; }
+    public IMudDialogInstance MudDialog { get; set; }
 
     private void Close() => MudDialog.Close();
 

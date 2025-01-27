@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<TieredPGO>true</TieredPGO>
 		<!--**********************************************-->
 		<DebugType>none</DebugType>
@@ -9,10 +9,10 @@
 		<RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
 		<RunAnalyzers>false</RunAnalyzers>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Copyright>Copyright (c) 2023-2022 Maanfee</Copyright>
+		<Copyright>Copyright (c) 2022-2025 Maanfee</Copyright>
 		<Company>Maanfee</Company>
 		<Authors>Maanfee Team (MF)</Authors>
-		<Version>2.9.13</Version>
+		<Version>3.0.0</Version>
 		<PackageIcon>MaanfeeLight.png</PackageIcon>
 		<!--**********************************************-->
 		<PackageType>Template</PackageType>

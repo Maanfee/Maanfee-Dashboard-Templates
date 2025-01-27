@@ -1,21 +1,24 @@
 ﻿using Maanfee.Dashboard.Core;
 using Maanfee.Dashboard.Domain.ViewModels;
+using Maanfee.Logging.Domain;
+using Microsoft.AspNetCore.SignalR.Client;
 using MudBlazor;
 using System;
 using System.Threading.Tasks;
 
 namespace Maanfee.Dashboard.Views.Pages.Authentications
 {
-	public partial class Login
+    public partial class Login
     {
         private bool PasswordVisibility;
-        private InputType _passwordInput = InputType.Password;
-        private string _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
+        private InputType PasswordInput = InputType.Password;
+        private string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
         private LoginViewModel LoginViewModelSubmit = new();
         private bool IsProcessing = false;
 
-		protected override async Task OnInitializedAsync()
-		{
+        protected override async Task OnInitializedAsync()
+        {
             await base.OnInitializedAsync();
         }
 
@@ -24,17 +27,17 @@ namespace Maanfee.Dashboard.Views.Pages.Authentications
             if (PasswordVisibility)
             {
                 PasswordVisibility = false;
-                _passwordInputIcon = Icons.Material.Filled.VisibilityOff;
-                _passwordInput = InputType.Password;
+                PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+                PasswordInput = InputType.Password;
             }
             else
             {
                 PasswordVisibility = true;
-                _passwordInputIcon = Icons.Material.Filled.Visibility;
-                _passwordInput = InputType.Text;
+                PasswordInputIcon = Icons.Material.Filled.Visibility;
+                PasswordInput = InputType.Text;
             }
         }
-      
+
         private async Task OnSubmit()
         {
             if (IsProcessing)
@@ -49,6 +52,17 @@ namespace Maanfee.Dashboard.Views.Pages.Authentications
             catch (Exception ex)
             {
                 Snackbar.Add(ex.Message, Severity.Error);
+
+                if (LoggingHubConnection is not null)
+                {
+                    await LoggingHubConnection.SendAsync("SendMessageAsync", new LogInfo
+                    {
+                        IdLoggingPlatform = LoggingPlatformDefaultValue.Client,
+                        Message = $"{ex.Message}",
+                        LogDate = DateTime.Now,
+                        IdLoggingLevel = LoggingLevelDefaultValue.Error,
+                    });
+                }
             }
 
             IsProcessing = false;

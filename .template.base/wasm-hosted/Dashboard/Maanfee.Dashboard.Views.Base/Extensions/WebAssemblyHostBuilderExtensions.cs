@@ -1,5 +1,4 @@
 ﻿using Maanfee.Dashboard.Views.Core.Services;
-using Maanfee.Web.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -39,9 +38,8 @@ namespace Maanfee.Dashboard.Views.Base.Extensions
             {
                 RegisterPermissionClaims(options);
             });
-            builder.Services.AddScoped<CustomStateProvider>();
-            builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<CustomStateProvider>());
-            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            builder.Services.AddScoped<CustomAuthenticationStateProvider>();
+            builder.Services.AddScoped<AuthenticationStateProvider>(s => s.GetRequiredService<CustomAuthenticationStateProvider>());
             builder.Services.AddScoped<JwtAuthenticationStateProvider>();
 
             #endregion
@@ -50,9 +48,9 @@ namespace Maanfee.Dashboard.Views.Base.Extensions
 
             builder.Services.AddSingleton<AccountStateContainer>();
 			builder.Services.AddSingleton<UrlStateContainer>();
-			builder.Services.AddScoped<LocalConfigurationService>();
-            builder.Services.AddScoped<PermissionService>();
-            builder.Services.AddScoped<TableConfigurationService>();
+            builder.Services.AddSingleton<LocalConfigurationService>();
+            builder.Services.AddSingleton<PermissionService>();
+            builder.Services.AddSingleton<TableConfigurationService>();
 
 			#endregion
 

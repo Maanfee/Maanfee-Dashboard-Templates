@@ -11,8 +11,7 @@
     <link href="fonts/font.css" rel="stylesheet" />
     <link href="_content/Maanfee.Dashboard.Views.Base/css/App.css" rel="stylesheet" />
 </head>
-
-<!--<body oncontextmenu="return false">-->
+ <!--oncontextmenu="return false"-->
 <body>
     <div id="app">
         <style>
@@ -74,14 +73,11 @@
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 
-    <script src="_content/Allegiance.Blazor.Highcharts/scripts/blazor-highcharts.js"></script>
-    <script src="highcharts/highcharts.js"></script>
-    <script src="highcharts/highcharts-more.js"></script>
-    <script src="highcharts/modules/series-label.js"></script>
-    <script src="highcharts/modules/solid-gauge.js"></script>
-    <script src="highcharts/modules/exporting.js"></script>
-    <script src="highcharts/modules/export-data.js"></script>
-    <script src="highcharts/modules/accessibility.js"></script>
+    <script>
+        window.onpopstate = function () {
+            window.history.go(1);
+        };
+    </script>
 
 </body>
 
